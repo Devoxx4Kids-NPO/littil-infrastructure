@@ -1,18 +1,7 @@
-# Welcome to your CDK Java project!
+# Deploying a new environment
 
-This is a blank project for CDK development with Java.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-It is a [Maven](https://maven.apache.org/) based project, so you can open this project with any Maven compatible Java IDE to build and run tests.
-
-## Useful commands
-
- * `mvn package`     compile and run tests
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+## AWS Account
+- Create an AWS Root account
+- Create IAM user for cdk bootstrap and a role for deployments:
+    - Create a cloudformation stack named "Cdk-Facilities" with `cf-cdk-facilities.yml`
+    - Generate an access key for user `LITTIL-<country>-<env>-Cdk` and bootstrap eu-west-1 and us-east-1 (for ACM)

@@ -1,0 +1,125 @@
+Description:  "CDK basic facilities"
+
+Parameters:
+  Environment:
+    Description : "Environment"
+    Type: "String"
+    AllowedPattern : "acc|prod"
+  Country:
+    Description : "Country (e.g. NL)"
+    Type: "String"
+    AllowedPattern : "NL"
+
+Resources:
+  # Bootstrap CDK
+  CdkBootstrapUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName:
+        !Sub
+        - "LITTIL-${Country}-${Env}-Cdk-Bootstrap"
+        - Country: !Ref Country
+        - Env: !Ref Environment
+
+  CdkBootstrapGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName:
+        !Sub
+        - "LITTIL-${Country}-${Env}-Cdk-Bootstrap"
+        - Country: !Ref Country
+        - Env: !Ref Environment
+
+  CdkUserBootstrapMembership:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref CdkBootstrapGroup
+      Users:
+        - !Ref CdkBootstrapUser
+
+  CdkBootstrapPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      Groups:
+        - !Ref CdkBootstrapGroup
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'cloudformation:DescribeStacks'
+              - 'cloudformation:CreateChangeSet'
+              - 'cloudformation:GetTemplate'
+              - 'cloudformation:DescribeChangeSet'
+              - 'cloudformation:ExecuteChangeSet'
+              - 'cloudformation:DescribeStackEvents'
+              - 'cloudformation:DeleteStack'
+            Resource:
+              - !Sub 'arn:aws:cloudformation:eu-west-1:${AWS::AccountId}:stack/CDKToolkit/*'
+              - !Sub 'arn:aws:cloudformation:us-east-1:${AWS::AccountId}:stack/CDKToolkit/*'
+          - Effect: Allow
+            Action:
+              - 'iam:GetRole'
+              - 'iam:CreateRole'
+              - 'iam:AttachRolePolicy'
+              - 'iam:DetachRolePolicy'
+              - 'iam:DeleteRolePolicy'
+              - 'iam:PutRolePolicy'
+              - 'iam:GetRole'
+              - 'iam:DeleteRole'
+              - 'iam:TagRole'
+              - 'iam:GetRolePolicy'
+            Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
+          - Effect: Allow
+            Action:
+              - 'ecr:CreateRepository'
+              - 'ecr:DeleteRepository'
+              - 'ecr:SetRepositoryPolicy'
+              - 'ecr:DescribeRepositories'
+            Resource:
+              - !Sub 'arn:aws:ecr:eu-west-1:${AWS::AccountId}:repository/cdk-*'
+              - !Sub 'arn:aws:ecr:us-east-1:${AWS::AccountId}:repository/cdk-*'
+          - Effect: Allow
+            Action:
+              - 'ssm:GetParameter'
+              - 'ssm:GetParameters'
+              - 'ssm:PutParameter'
+              - 'ssm:DeleteParameter'
+            Resource:
+              - !Sub 'arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/cdk-*'
+              - !Sub 'arn:aws:ssm:us-east-1:${AWS::AccountId}:parameter/cdk-*'
+          - Effect: Allow
+            Action:
+              - 's3:CreateBucket'
+              - 's3:PutEncryptionConfiguration'
+              - 's3:GetEncryptionConfiguration'
+              - 's3:PutBucketVersioning'
+              - 's3:PutBucketPublicAccessBlock'
+              - 's3:PutBucketPolicy'
+              - 's3:GetBucketPolicy'
+            Resource:
+              - 'arn:aws:s3:::*'
+      PolicyName: cdk-bootstrap
+
+  # Using CDK
+  CdkRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: Role that is allowed to assume CDK roles
+      Path: /
+      Policies:
+        - PolicyName: assumeRole
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'sts:AssumeRole'
+                Resource:
+                  - 'arn:aws:iam::*:role/cdk-*'
+      RoleName:
+        !Sub
+        - "LITTIL-${Country}-${Env}-Cdk"
+        - Country: !Ref Country
+        - Env: !Ref Environment
+      Tags:
+        - Tag

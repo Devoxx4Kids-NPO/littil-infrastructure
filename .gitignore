@@ -19,7 +19,3 @@
 # System files
 .DS_Store
 Thumbs.db
-
-# Artifacts
-target/
-cdk.out
