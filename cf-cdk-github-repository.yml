@@ -1,4 +1,4 @@
-Description:  "CDK role for LITTIL Github repository"
+Description:  "CDK role for LITTIL Github repositories"
 
 Parameters:
   Environment:
@@ -13,13 +13,19 @@ Parameters:
     Type: String
     Default: Devoxx4Kids-NPO
     AllowedPattern: "Devoxx4Kids-NPO"
-  FullRepoName:
-    Description: "Github repository name, e.g. littil-frontend"
+  FrontendRepoName:
+    Description: "Github front-end repository name"
     Type: String
+    Default: littil-frontend
+    AllowedPattern: "littil-.*"
+  BackendRepoName:
+    Description: "Github back-end repository name"
+    Type: String
+    Default: littil-backend
     AllowedPattern: "littil-.*"
 
 Resources:
-  CdkRole:
+  CdkFrontendRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
@@ -46,7 +52,36 @@ Resources:
               Federated: !Ref GithubOidc
             Condition:
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub repo:${FullRepoName}:*
+                token.actions.githubusercontent.com:sub: !Sub repo:${FrontendRepoName}:*
+
+  CdkBackendRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        !Sub
+        - "LITTIL-${Country}-${Env}-Cdk-backend"
+        - Country: !Ref Country
+          Env: !Ref Environment
+      Description: Role that is allowed to assume CDK roles
+      Path: /
+      Policies:
+        - PolicyName: assumeRole
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'sts:AssumeRole'
+                Resource:
+                  - 'arn:aws:iam::*:role/cdk-*'
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRoleWithWebIdentity
+            Principal:
+              Federated: !Ref GithubOidc
+            Condition:
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub repo:${BackendRepoName}:*
 
   GithubOidc:
     Type: AWS::IAM::OIDCProvider
@@ -57,5 +92,7 @@ Resources:
         - !Sub https://github.com/${GithubOrg}
 
 Outputs:
-  Role:
-    Value: !GetAtt CdkRole.Arn
+  FrontendRole:
+    Value: !GetAtt CdkFrontendRole.Arn
+  BackendRole:
+    Value: !GetAtt CdkBackendRole.Arn
