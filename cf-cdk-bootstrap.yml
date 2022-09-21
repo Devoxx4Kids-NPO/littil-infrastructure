@@ -1,4 +1,4 @@
-Description:  "CDK basic facilities"
+Description:  "Creates a IAM user with permissions to bootstrap the CDK in eu-west-1 and us-east-1"
 
 Parameters:
   Environment:
@@ -11,7 +11,6 @@ Parameters:
     AllowedPattern : "NL"
 
 Resources:
-  # Bootstrap CDK
   CdkBootstrapUser:
     Type: AWS::IAM::User
     Properties:
@@ -19,7 +18,7 @@ Resources:
         !Sub
         - "LITTIL-${Country}-${Env}-Cdk-Bootstrap"
         - Country: !Ref Country
-        - Env: !Ref Environment
+          Env: !Ref Environment
 
   CdkBootstrapGroup:
     Type: AWS::IAM::Group
@@ -28,7 +27,7 @@ Resources:
         !Sub
         - "LITTIL-${Country}-${Env}-Cdk-Bootstrap"
         - Country: !Ref Country
-        - Env: !Ref Environment
+          Env: !Ref Environment
 
   CdkUserBootstrapMembership:
     Type: AWS::IAM::UserToGroupAddition
@@ -100,26 +99,3 @@ Resources:
             Resource:
               - 'arn:aws:s3:::*'
       PolicyName: cdk-bootstrap
-
-  # Using CDK
-  CdkRole:
-    Type: AWS::IAM::Role
-    Properties:
-      Description: Role that is allowed to assume CDK roles
-      Path: /
-      Policies:
-        - PolicyName: assumeRole
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: 'sts:AssumeRole'
-                Resource:
-                  - 'arn:aws:iam::*:role/cdk-*'
-      RoleName:
-        !Sub
-        - "LITTIL-${Country}-${Env}-Cdk"
-        - Country: !Ref Country
-        - Env: !Ref Environment
-      Tags:
-        - Tag
