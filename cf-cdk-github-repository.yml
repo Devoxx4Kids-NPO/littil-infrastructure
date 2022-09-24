@@ -24,12 +24,13 @@ Resources:
     Properties:
       RoleName:
         !Sub
-        - "LITTIL-${Country}-${Env}-Cdk"
+        - "LITTIL-${Country}-${Env}-${Repo}-Cdk-Role"
         - Country: !Ref Country
           Env: !Ref Environment
+          Repo: !Ref RepositoryName
       Description: Role that is allowed to assume CDK roles
       Policies:
-        - PolicyName: assumeRole
+        - PolicyName: Assume-CDK-roles
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -42,19 +43,30 @@ Resources:
           - Effect: Allow
             Action: sts:AssumeRoleWithWebIdentity
             Principal:
-              Federated: !Ref GithubOidc
+              Federated: !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
             Condition:
               StringLike:
                 token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrg}/${RepositoryName}:*
 
-  GithubOidc:
-    Type: AWS::IAM::OIDCProvider
+# Local user, remove after pipeline
+  CdkUser:
+    Type: AWS::IAM::User
     Properties:
-      Url: https://token.actions.githubusercontent.com
-      ClientIdList:
-        - sts.amazonaws.com
-      ThumbprintList:
-        - 6938fd4d98bab03faadb97b34396831e3780aea1
+      UserName:
+        !Sub
+        - "LITTIL-${Country}-${Env}-${Repo}-Cdk-User"
+        - Country: !Ref Country
+          Env: !Ref Environment
+          Repo: !Ref RepositoryName
+      Policies:
+        - PolicyName: Assume-CDK-roles
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'sts:AssumeRole'
+                Resource:
+                  - 'arn:aws:iam::*:role/cdk-*'
 
 Outputs:
   CdkRole:
