@@ -1,4 +1,4 @@
-Description:  "CDK role for LITTIL Github repositories"
+Description:  "CDK role for LITTIL Github repository"
 
 Parameters:
   Environment:
@@ -9,23 +9,17 @@ Parameters:
     Description : "Country (e.g. NL)"
     Type: "String"
     AllowedPattern : "NL"
-  GithubOrg:
+  GitHubOrg:
     Type: String
     Default: Devoxx4Kids-NPO
     AllowedPattern: "Devoxx4Kids-NPO"
-  FrontendRepoName:
-    Description: "Github front-end repository name"
+  RepositoryName:
+    Description: "Github repository name"
     Type: String
-    Default: littil-frontend
-    AllowedPattern: "littil-.*"
-  BackendRepoName:
-    Description: "Github back-end repository name"
-    Type: String
-    Default: littil-backend
     AllowedPattern: "littil-.*"
 
 Resources:
-  CdkFrontendRole:
+  CdkRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
@@ -34,7 +28,6 @@ Resources:
         - Country: !Ref Country
           Env: !Ref Environment
       Description: Role that is allowed to assume CDK roles
-      Path: /
       Policies:
         - PolicyName: assumeRole
           PolicyDocument:
@@ -52,47 +45,17 @@ Resources:
               Federated: !Ref GithubOidc
             Condition:
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub repo:${FrontendRepoName}:*
-
-  CdkBackendRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName:
-        !Sub
-        - "LITTIL-${Country}-${Env}-Cdk-backend"
-        - Country: !Ref Country
-          Env: !Ref Environment
-      Description: Role that is allowed to assume CDK roles
-      Path: /
-      Policies:
-        - PolicyName: assumeRole
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: 'sts:AssumeRole'
-                Resource:
-                  - 'arn:aws:iam::*:role/cdk-*'
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Action: sts:AssumeRoleWithWebIdentity
-            Principal:
-              Federated: !Ref GithubOidc
-            Condition:
-              StringLike:
-                token.actions.githubusercontent.com:sub: !Sub repo:${BackendRepoName}:*
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrg}/${RepositoryName}:*
 
   GithubOidc:
     Type: AWS::IAM::OIDCProvider
     Properties:
       Url: https://token.actions.githubusercontent.com
-      ThumbprintList: [1234567891234567891234567891234567891234]
       ClientIdList:
-        - !Sub https://github.com/${GithubOrg}
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
 
 Outputs:
-  FrontendRole:
-    Value: !GetAtt CdkFrontendRole.Arn
-  BackendRole:
-    Value: !GetAtt CdkBackendRole.Arn
+  CdkRole:
+    Value: !GetAtt CdkRole.Arn
