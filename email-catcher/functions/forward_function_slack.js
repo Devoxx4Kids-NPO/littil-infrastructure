@@ -92,11 +92,13 @@ exports.handler = function (event, context) {
         .then((email) => {
             var emailBody = email.Body.toString('utf-8');
 
+            const sender = msgInfo.mail.commonHeaders.from[0];
             const recipient = msgInfo.mail.commonHeaders.to[0];
 
             const passwordRegex = new RegExp('Uw tijdelijke wachtwoord\\:\\s+(.+)', 'i');
             const passwordResult = passwordRegex.exec(emailBody);
-            const message = 'E-mail: ' + recipient + '\n'
+            const message = 'From: ' + sender + '\n' +
+                'To: ' + recipient + '\n'
                 + 'Wachtwoord: ' + (
                     passwordResult
                         ? passwordResult[1]
