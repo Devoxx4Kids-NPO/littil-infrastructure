@@ -1,8 +1,8 @@
-# Welcome to your CDK TypeScript project
+# LITTI E-mail catcher
 
-This is a blank project for CDK development with TypeScript.
+This AWS CDK app contains a stack that receives e-mails through SES, stores them in an S3 bucket and then uses Lambda to extract a password and post that password to a LITTIL Slack channel. This enables testing on without the need for creating an e-mail inbox for each account used for testing.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+The Slack webhook used is stored in Secrets Manager and retrieved at runtime by the Lambda function.
 
 ## Useful commands
 
