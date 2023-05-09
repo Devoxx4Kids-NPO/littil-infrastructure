@@ -1,4 +1,4 @@
-# LITTI E-mail catcher
+# LITTIL E-mail catcher
 
 This AWS CDK app contains a stack that receives e-mails through SES, stores them in an S3 bucket and then uses Lambda to extract a password and post that password to a LITTIL Slack channel. This enables testing on without the need for creating an e-mail inbox for each account used for testing.
 
