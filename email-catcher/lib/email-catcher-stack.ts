@@ -114,23 +114,24 @@ export class EmailCatcherStack extends Stack {
             removalPolicy: RemovalPolicy.DESTROY,
         });
 
-        emailReceivingBucket.addToResourcePolicy(new PolicyStatement({
-            effect: Effect.ALLOW,
-            principals: [
-                new ServicePrincipal('ses.amazonaws.com'),
-            ],
-            actions: [
-                's3:PutObject',
-            ],
-            resources: [
-                emailReceivingBucket.bucketArn + '/' + s3BucketEmailObjectPrefix + '*',
-            ],
-            conditions: {
-                'StringEquals': {
-                    'aws:Referer': this.account,
+        emailReceivingBucket
+            .addToResourcePolicy(new PolicyStatement({
+                effect: Effect.ALLOW,
+                principals: [
+                    new ServicePrincipal('ses.amazonaws.com'),
+                ],
+                actions: [
+                    's3:PutObject',
+                ],
+                resources: [
+                    emailReceivingBucket.bucketArn + '/' + s3BucketEmailObjectPrefix + '*',
+                ],
+                conditions: {
+                    'StringEquals': {
+                        'aws:Referer': this.account,
+                    },
                 },
-            },
-        }));
+            }));
 
         return emailReceivingBucket;
     }
