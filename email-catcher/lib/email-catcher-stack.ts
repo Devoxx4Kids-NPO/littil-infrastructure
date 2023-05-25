@@ -92,6 +92,7 @@ export class EmailCatcherStack extends Stack {
         const lambdaFunctionCode = readFileSync('./functions/forward_function_slack.js', 'utf-8');
 
         const emailToSlackAction = new Function(this, 'EmailForwardToSlackLambda', {
+            // TODO: Update image to a newer version of node, needs to be done together with switching out forward_function_slack.js for forward_function_slack_v3.js
             runtime: Runtime.NODEJS_14_X,
             handler: 'index.handler',
             code: Code.fromInline(lambdaFunctionCode),
