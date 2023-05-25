@@ -1,3 +1,8 @@
+/**
+ * This file uses AWS SDK V3+. Switch out forward_function_slack.js for this one when upgrading to a newer version of
+ * Node. The newer Node images include the SDK v3 whereas older images will provide V2.
+ */
+
 const {S3Client, GetObjectCommand} = require("@aws-sdk/client-s3");
 const {SecretsManagerClient, GetSecretValueCommand} = require("@aws-sdk/secrets-manager");
 const https = require('https');
