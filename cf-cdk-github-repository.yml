@@ -4,7 +4,7 @@ Parameters:
   AccountName:
     Description : "AccountName"
     Type: "String"
-    AllowedPattern : "acc|prod"
+    AllowedPattern : "staging|prod|shared"
   Country:
     Description : "Country (e.g. NL)"
     Type: "String"
