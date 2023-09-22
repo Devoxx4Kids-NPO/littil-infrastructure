@@ -1,4 +1,10 @@
+This repository contains cloudformation templates and CDK apps for bootstrapping a LITTIL cloud environment in AWS and for any infrastructure resources that are not part of a specific application.
+
+For general information about LITTIL infrastructure and onboarding information, check out the LITTIL [documentation site](https://devoxx4kids-npo.github.io/littil-documentation/platform/infrastructure/).
+
 ## Cloud setup
+
+Note: AWS Organizations could be used to automate this process further but is not described here since it was not used for LITTIL NL.
 
 The LITTIL platform allows deployment into the AWS public cloud platform. To set up a new LITTIL organisation's infrastructure:
 - Create an AWS account, this will be the "master" or "billing" account. Credits or credit card information will be linked to this account, and thus this account will pay for any infrastructure.
