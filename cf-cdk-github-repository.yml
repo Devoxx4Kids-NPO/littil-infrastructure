@@ -1,8 +1,8 @@
 Description:  "CDK role for LITTIL Github repository"
 
 Parameters:
-  Environment:
-    Description : "Environment"
+  AccountName:
+    Description : "AccountName"
     Type: "String"
     AllowedPattern : "acc|prod"
   Country:
@@ -24,9 +24,9 @@ Resources:
     Properties:
       RoleName:
         !Sub
-        - "LITTIL-${Country}-${Env}-${Repo}-Cdk-Role"
+        - "LITTIL-${Country}-${AccountName}-${Repo}-Cdk-Role"
         - Country: !Ref Country
-          Env: !Ref Environment
+          AccountName: !Ref AccountName
           Repo: !Ref RepositoryName
       Description: Role that is allowed to assume CDK roles
       Policies:
@@ -54,9 +54,9 @@ Resources:
     Properties:
       UserName:
         !Sub
-        - "LITTIL-${Country}-${Env}-${Repo}-Cdk-User"
+        - "LITTIL-${Country}-${AccountName}-${Repo}-Cdk-User"
         - Country: !Ref Country
-          Env: !Ref Environment
+          AccountName: !Ref AccountName
           Repo: !Ref RepositoryName
       Policies:
         - PolicyName: Assume-CDK-roles
