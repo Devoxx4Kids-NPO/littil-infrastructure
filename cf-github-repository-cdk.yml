@@ -1,10 +1,10 @@
-Description:  "CDK role for LITTIL Github repository"
+Description:  "Role for LITTIL Github repository to assume CDK roles"
 
 Parameters:
   AccountName:
     Description : "AccountName"
     Type: "String"
-    AllowedPattern : "staging|prod|shared"
+    AllowedPattern : "staging|production|shared"
   Country:
     Description : "Country (e.g. NL)"
     Type: "String"
