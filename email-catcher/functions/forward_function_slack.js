@@ -95,7 +95,7 @@ exports.handler = function (event, context) {
             const sender = msgInfo.mail.commonHeaders.from[0];
             const recipient = msgInfo.mail.commonHeaders.to[0];
 
-            const passwordRegex = new RegExp('Uw tijdelijke wachtwoord\\:\\s+(.+)', 'i');
+            const passwordRegex = new RegExp('Uw wachtwoord\\:\\s+(.+)', 'i');
             const passwordResult = passwordRegex.exec(emailBody);
             const message = 'From: ' + sender + '\n' +
                 'To: ' + recipient + '\n'
