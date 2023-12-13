@@ -1,0 +1,95 @@
+Description:  "Role for LITTIL Github repository to push to ECR"
+
+Parameters:
+  AccountName:
+    Description : "AccountName"
+    Type: "String"
+    AllowedPattern : "staging|production|shared"
+  Country:
+    Description : "Country (e.g. NL)"
+    Type: "String"
+    AllowedPattern : "NL"
+  GitHubOrg:
+    Type: String
+    Default: Devoxx4Kids-NPO
+    AllowedPattern: "Devoxx4Kids-NPO"
+  RepositoryName:
+    Description: "Github repository name"
+    Type: String
+    AllowedPattern: "littil-.*"
+
+Resources:
+  EcrRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        !Sub
+        - "LITTIL-${Country}-${AccountName}-${Repo}-Ecr-Push-Role"
+        - Country: !Ref Country
+          AccountName: !Ref AccountName
+          Repo: !Ref RepositoryName
+      Description: Role that is allowed to push to littil-backend ECR repo
+      Policies:
+        - PolicyName: Push-To-ECR-Backend
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr:BatchGetImage'
+                  - 'ecr:BatchCheckLayerAvailability'
+                  - 'ecr:CompleteLayerUpload'
+                  - 'ecr:GetDownloadUrlForLayer'
+                  - 'ecr:InitiateLayerUpload'
+                  - 'ecr:PutImage'
+                  - 'ecr:UploadLayerPart'
+                Resource: !Sub 'arn:aws:ecr:*:${AWS::AccountId}:repository/littil-backend'
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRoleWithWebIdentity
+            Principal:
+              Federated: !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+            Condition:
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrg}/${RepositoryName}:*
+
+# Local user, remove after pipeline
+  ECRUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName:
+        !Sub
+        - "LITTIL-${Country}-${AccountName}-${Repo}-ECR-User"
+        - Country: !Ref Country
+          AccountName: !Ref AccountName
+          Repo: !Ref RepositoryName
+      Policies:
+        - PolicyName: Push-To-ECR-Backend
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr:BatchGetImage'
+                  - 'ecr:BatchCheckLayerAvailability'
+                  - 'ecr:CompleteLayerUpload'
+                  - 'ecr:GetDownloadUrlForLayer'
+                  - 'ecr:InitiateLayerUpload'
+                  - 'ecr:PutImage'
+                  - 'ecr:UploadLayerPart'
+                Resource: !Sub 'arn:aws:ecr:*:${AWS::AccountId}:repository/littil-backend'
+        - PolicyName: Push-To-ECR-Maintenance
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ecr:BatchGetImage'
+                  - 'ecr:BatchCheckLayerAvailability'
+                  - 'ecr:CompleteLayerUpload'
+                  - 'ecr:GetDownloadUrlForLayer'
+                  - 'ecr:InitiateLayerUpload'
+                  - 'ecr:PutImage'
+                  - 'ecr:UploadLayerPart'
+                Resource: !Sub 'arn:aws:ecr:*:${AWS::AccountId}:repository/littil-backend-maintenance'
