@@ -19,6 +19,20 @@ The LITTIL platform allows deployment into the AWS public cloud platform. To set
 
 Configure the following for all root accounts
 
+### Moving to Azure
+
+To facilitate the move to Azure in 2025, an Azure account has been registered. We'll use a subscription per environment (staging & prod). A database-migration test has been succesfully executed.
+
+The services we'll most likely use:
+- App service
+- ...
+
+Todo:
+- Migrate backend & database
+- Facilitate logging from container to a tool in Azure
+- Configure e-mail DNS records according to changes
+- Think about alerting options in Azure
+
 ## Deploying a new environment
 
 ### AWS Account CDK bootstrap
