@@ -33,6 +33,13 @@ Todo:
 - Configure e-mail DNS records according to changes
 - Think about alerting options in Azure
 
+#### Database migration
+
+To export the database, use the mysqldump tool:
+```bash
+ mysqldump --host <host> --user <user> --database LittilDatabase -p > dump.sql
+```
+
 ## Deploying a new environment
 
 ### AWS Account CDK bootstrap
