@@ -24,14 +24,20 @@ Configure the following for all root accounts
 To facilitate the move to Azure in 2025, an Azure account has been registered. We'll use a subscription per environment (staging & prod). A database-migration test has been succesfully executed.
 
 The services we'll most likely use:
-- App service
-- ...
+- App service (tbd; first preference: Azure Container Instance)
+- Azure-database for MySQL Flexible Server
+- Email Communication Services (plausible for SMTP)
+- Container Registry (tbd; first preference is to use the github container registry)
 
 Todo:
 - Migrate backend & database
 - Facilitate logging from container to a tool in Azure
 - Configure e-mail DNS records according to changes
 - Think about alerting options in Azure
+
+Todont:
+- Hosting static html frontend (will remain at AWS)
+- Mailcatcher lamda (will remain at AWS)
 
 #### Database migration
 
