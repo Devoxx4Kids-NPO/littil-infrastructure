@@ -31,13 +31,13 @@ The services we'll most likely use:
 
 Todo:
 - Migrate backend & database
-- Facilitate logging from container to a tool in Azure
+- Facilitate logging from container to a tool in (or outside of) Azure
 - Configure e-mail DNS records according to changes
 - Think about alerting options in Azure
 
-Todont:
-- Hosting static html frontend (will remain at AWS)
-- Mailcatcher lamda (will remain at AWS)
+Todon't (currently zero-cost):
+- Migrating hosting static html frontend (will remain at AWS)
+- Migrating mailcatcher for sending test e-mails (anything @dev.littil.org) to Slack (deployed as TypeScript function in Lambda, will remain at AWS untill rewritten)
 
 #### Database migration
 
