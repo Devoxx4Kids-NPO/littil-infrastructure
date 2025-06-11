@@ -19,6 +19,33 @@ The LITTIL platform allows deployment into the AWS public cloud platform. To set
 
 Configure the following for all root accounts
 
+### Moving to Azure
+
+To facilitate the move to Azure in 2025, an Azure account has been registered. We'll use a subscription per environment (staging & prod). A database-migration test has been succesfully executed.
+
+The services we'll most likely use:
+- App service (tbd; first preference: Azure Container Instance)
+- Azure-database for MySQL Flexible Server
+- Email Communication Services (plausible for SMTP)
+- Container Registry (tbd; first preference is to use the github container registry)
+
+Todo:
+- Migrate backend & database
+- Facilitate logging from container to a tool in (or outside of) Azure
+- Configure e-mail DNS records according to changes
+- Think about alerting options in Azure
+
+Todon't (currently zero-cost):
+- Migrating hosting static html frontend (will remain at AWS)
+- Migrating mailcatcher for sending test e-mails (anything @dev.littil.org) to Slack (deployed as TypeScript function in Lambda, will remain at AWS untill rewritten)
+
+#### Database migration
+
+To export the database, use the mysqldump tool:
+```bash
+ mysqldump --host <host> --user <user> --database LittilDatabase -p > dump.sql
+```
+
 ## Deploying a new environment
 
 ### AWS Account CDK bootstrap
